@@ -5,13 +5,17 @@ const { Pool } = require("pg");
 const cors = require("cors");
 
 const app = express();
+
+// Allow requests from your frontend
 app.use(cors({
     origin: true
 }));
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
+// PostgreSQL connection
 const pool = new Pool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
@@ -23,13 +27,12 @@ const pool = new Pool({
         : false
 });
 
-
-app.use(express.json());
-
+// Health check
 app.get("/", (req, res) => {
     res.send("ShortURL backend is running!");
 });
 
+// Create short URL
 app.post("/shorten", async (req, res) => {
     const url = req.body.url?.trim();
 
@@ -58,7 +61,9 @@ app.post("/shorten", async (req, res) => {
         });
     }
 
-    const shortCode = Math.random().toString(36).substring(2, 8);
+    const shortCode = Math.random()
+        .toString(36)
+        .substring(2, 8);
 
     try {
         await pool.query(
@@ -72,13 +77,15 @@ app.post("/shorten", async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("Database error:", error);
+
         res.status(500).json({
             error: "Could not save URL"
         });
     }
 });
 
+// Redirect short URL
 app.get("/:shortCode", async (req, res) => {
     const shortCode = req.params.shortCode;
 
@@ -97,11 +104,13 @@ app.get("/:shortCode", async (req, res) => {
         res.redirect(originalUrl);
 
     } catch (error) {
-        console.error(error);
+        console.error("Redirect error:", error);
+
         res.status(500).send("Server error");
     }
 });
 
+// Test database connection
 pool.query("SELECT NOW()", (err, result) => {
     if (err) {
         console.error("Database connection failed:", err);
@@ -111,6 +120,8 @@ pool.query("SELECT NOW()", (err, result) => {
     }
 });
 
+// Start server
 app.listen(PORT, () => {
-    console.log(`Server running at ${process.env.BASE_URL}`);
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Base URL: ${process.env.BASE_URL}`);
 });
