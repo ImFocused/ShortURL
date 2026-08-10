@@ -66,7 +66,7 @@ app.post("/shorten", async (req, res) => {
 
         res.json({
             originalUrl: url,
-            shortUrl: `http://localhost:${PORT}/${shortCode}`
+            shortUrl: `${process.env.BASE_URL}/${shortCode}`
         });
 
     } catch (error) {
@@ -110,5 +110,5 @@ pool.query("SELECT NOW()", (err, result) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Server running at ${process.env.BASE_URL}`);
 });
