@@ -1,6 +1,10 @@
 import { useState } from "react";
 import "./App.css";
 
+const API_URL = import.meta.env.PROD
+  ? "https://shorturl-ielm.onrender.com"
+  : "http://localhost:3000";
+
 function App() {
   const [url, setUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
