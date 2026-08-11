@@ -134,9 +134,9 @@ function App() {
         </h1>
 
         <p className="subtitle">
-          Turn long, messy URLs into clean links that are
+          <span>Turn long, messy URLs into clean links that </span>
           <br className="desktop-break" />
-          easy to share anywhere.
+           <span>are easy to share anywhere.</span>
         </p>
 
         <div className="shortener-card">
